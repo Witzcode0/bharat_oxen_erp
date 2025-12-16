@@ -57,3 +57,23 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             ProductImage.objects.create(product=product, image=img)
 
         return product
+
+class ProductListSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField(source='id', read_only=True)
+    first_image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = [
+            'product_id',
+            'name',
+            'description',
+            'first_image'
+        ]
+
+    def get_first_image(self, obj):
+        image = obj.images.first()
+        if image and image.image:
+            request = self.context.get('request')
+            return request.build_absolute_uri(image.image.url)
+        return None

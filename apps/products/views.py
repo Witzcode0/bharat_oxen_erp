@@ -3,9 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Product, Unit
 from .serializers import (
-    ProductSerializer, ProductCreateSerializer, UnitSerializer
+    ProductSerializer, ProductCreateSerializer, UnitSerializer, ProductListSerializer
 )
 from uuid import UUID
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
 
 # UNIT CRUD
 @api_view(["POST"])
@@ -78,3 +80,21 @@ def delete_product(request, pk):
             "status": False,
             "message": "Product not found"
         }, status=status.HTTP_404_NOT_FOUND)
+    
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def product_list_api(request):
+    products = Product.objects.prefetch_related('images').all()
+
+    serializer = ProductListSerializer(
+        products,
+        many=True,
+        context={'request': request}
+    )
+
+    return Response({
+        "status": True,
+        "message": "Product list fetched successfully",
+        "data": serializer.data
+    })
