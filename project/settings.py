@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     # Custom apps
     'apps.master',
+    'apps.products',
     # Third party apps
     'rest_framework'
 ]
@@ -86,7 +87,7 @@ if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'boerp',
+            'NAME': BASE_DIR / 'boerp.db',
         }
     }
 else:
